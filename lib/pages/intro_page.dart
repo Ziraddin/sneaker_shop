@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:sneaker_shop/pages/home_page.dart';
 
 class IntroPage extends StatelessWidget {
@@ -50,10 +51,11 @@ class IntroPage extends StatelessWidget {
                 ),
                 onPressed: () {
                   Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const HomePage();
-                      },
+                    PageTransition(
+                      duration: const Duration(milliseconds: 600),
+                      reverseDuration: const Duration(milliseconds: 600),
+                      type: PageTransitionType.bottomToTop,
+                      child: const HomePage(),
                     ),
                   );
                 },

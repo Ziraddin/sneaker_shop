@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:sneaker_shop/components/bottom_navbar.dart';
 import 'package:sneaker_shop/pages/cart_page.dart';
+import 'package:sneaker_shop/pages/intro_page.dart';
 import 'package:sneaker_shop/pages/shop_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -11,13 +13,27 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late PageController _pageViewController;
   int _selectedIndex = 0;
-  List<Widget> pages = const [ShopPage(), CartPage()];
+
+  @override
+  void initState() {
+    super.initState();
+    _pageViewController = PageController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _pageViewController.dispose();
+  }
 
   void navigateBottomBar(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    _pageViewController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeInOut,
+    );
   }
 
   @override
@@ -45,11 +61,15 @@ class _HomePageState extends State<HomePage> {
                 DrawerHeader(
                   child: Image.asset("assets/images/nike.png"),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 25),
+                Padding(
+                  padding: const EdgeInsets.only(left: 25),
                   child: ListTile(
-                    leading: Icon(Icons.home),
-                    title: Text("Home"),
+                    leading: const Icon(Icons.home),
+                    title: const Text("Home"),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      navigateBottomBar(0);
+                    },
                   ),
                 ),
                 const Padding(
@@ -61,11 +81,22 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            const Padding(
-              padding: EdgeInsets.only(left: 25, bottom: 25),
+            Padding(
+              padding: const EdgeInsets.only(left: 25, bottom: 25),
               child: ListTile(
-                leading: Icon(Icons.logout),
-                title: Text("Logout"),
+                leading: const Icon(Icons.logout),
+                title: const Text("Logout"),
+                onTap: () {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    PageTransition(
+                      duration: const Duration(milliseconds: 600),
+                      reverseDuration: const Duration(milliseconds: 600),
+                      type: PageTransitionType.topToBottom,
+                      child: const IntroPage(),
+                    ),
+                    (Route<dynamic> route) => false,
+                  );
+                },
               ),
             ),
           ],
@@ -74,8 +105,18 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.grey.shade300,
       bottomNavigationBar: MyBottomNavbar(
         onTabChange: (index) => navigateBottomBar(index),
+        selectedIndex: _selectedIndex,
       ),
-      body: pages[_selectedIndex],
+      body: PageView(
+        controller: _pageViewController,
+        onPageChanged: (value) => setState(() {
+          _selectedIndex = value;
+        }),
+        children: const <Widget>[
+          ShopPage(),
+          CartPage(),
+        ],
+      ),
     );
   }
 }

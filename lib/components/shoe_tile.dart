@@ -26,6 +26,7 @@ class ShoeTile extends StatelessWidget {
             padding: const EdgeInsets.all(20),
             child: Text(
               shoe.description,
+              maxLines: 2,
               style: TextStyle(
                 color: Colors.grey.shade500,
               ),
