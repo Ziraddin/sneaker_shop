@@ -26,7 +26,7 @@ Welcome to the Sneaker Shop Flutter App! This app is designed to provide users w
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/yourusername/sneaker_shop.git
+   git clone https://github.com/Ziraddin/sneaker_shop.git
    cd sneaker_shop
    ```
 
